@@ -14,7 +14,6 @@
 #include <fcntl.h>
 #include <sys/dev.h>
 #include <sys/proxy.h>
-#include <time.h>
 #include <signal.h>
 #include "../include/shared_mem.h"
 #include "../include/my_pcs.h"
@@ -42,7 +41,9 @@ char test_K2[40][15]={{0x55, 0x04, 0x01, 0x0B, 0x65},		// ->+ 0
 					{0x55, 0x04, 0x01, 0x17, 0x71},         //10
 					{0x55, 0x07, 0x02, 0x14, 0x00, 0x15, 0x7E, 0x05},
 					{0x55, 0x05, 0x01, 0x09, 0x01, 0x65},   //12 ДкР
+					//{0x55, 0x05, 0x01, 0x09, 0x02, 0x66},   //12 ДкK
 					{0x55, 0x04, 0x01, 0x03, 0x5D},         //13 AG1 03 5D// A1 02 5C
+					//{0x55, 0x04, 0x01, 0x02, 0x5C},         //13 AG1 03 5D// A1 02 5C
 					{0x55, 0x04, 0x01, 0x1A, 0x74},			//14
 					{0x55, 0x05, 0x02, 0x13, 0x00, 0x6F},   //15
 
@@ -55,17 +56,20 @@ char test_K2[40][15]={{0x55, 0x04, 0x01, 0x0B, 0x65},		// ->+ 0
 					{0x55, 0x05, 0x01, 0x24, 0x03, 0x82}, //21 Ртек com
 					{0x55, 0x06, 0x02, 0x11, 0x00, 0x00, 0x72}, //22 Ртек lvl
 					{0x55, 0x04, 0x01, 0x18, 0x72}, //23 прер
-					{0x55, 0x08, 0x01, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00}, //24 ДанИ
+					//{0x55, 0x08, 0x01, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00}, //24 ДанИ
+					{0x55, 0x07, 0x01, 0x07, 0x00, 0x00, 0x00, 0x00}, //24 ДанИ
 					{0x55, 0x05, 0x01, 0x04, 0x00, 0x5F}, //25 АКП-ВЫКЛ
-					{0x55, 0x05, 0x01, 0x04, 0x00, 0x5F}, //26 К2-ВЫКЛ
-					{0x55, 0x0B, 0x01, 0x08, 0x2D, 0xF8, 0x0C, 0xBB, 0xAE, 0x29, 0x00, 0x2C}, //27 DanP.T.R
+					{0x55, 0x05, 0x01, 0x16, 0x01, 0x72}, //26 К2-ВКЛ
+					//{0x55, 0x05, 0x01, 0x16, 0x00, 0x71}, //26 К2-ВЫКЛ
+					{0x55, 0x0B, 0x01, 0x08, 0xD6, 0xA1, 0x66, 0xC9, 0x00, 0x00, 0x00, 0x00}, //27 DanP.T.R
 					//{0x55, 0x0B, 0x01, 0x08, 0x4A, 0x17, 0x15, 0x40, 0xAE, 0x29, 0x00, 0xF6}, //27 DanP.T.R
 					{0x55, 0x05, 0x01, 0x25, 0x6B, 0xEB}, //28 ZDR.Z
 					{0x55, 0x05, 0x01, 0x2C, 0x02, 0x89}, //29 R4K
 					{0x55, 0x05, 0x01, 0x05, 0x02, 0x62}, //30 S4K
 					{0x55, 0x06, 0x01, 0x19, 0x28, 0x01, 0x9E}, //31 Сеанс
 					{0x55, 0x05, 0x01, 0x2A, 0x06, 0x8B}, //32 ОБР-ТЕСТ
-					{0x55, 0x05, 0x01, 0x22, 0x01, 0x7E}}; //33 ПРЕР
+					{0x55, 0x05, 0x01, 0x22, 0x01, 0x7E}, //33 ПРЕР
+					{0x55, 0x05, 0x01, 0x24, 0x06, 0x85}}; //34 Выв. КД
 
 
 int err=0, i,i1;
@@ -157,10 +161,12 @@ write_com (Ncom)
 	Send(pid_drv,&wr_cpcs_s,&wr_cpcs_r,sizeof(wr_cpcs_s),sizeof(wr_cpcs_r));
 
 	//printf("время : %d  <---  (",Tcount);
-	time_of_day=time(NULL);
-	msec=div(Tcount,10);
-	strftime(b, 40 , "%T", localtime(&time_of_day));//D T
-	printf("%s:%03d <-- (",b,msec.rem*100);			
+	//1time_of_day=time(NULL);
+	//1msec=div(Tcount,10);
+	//1strftime(b, 40 , "%T", localtime(&time_of_day));//D T
+	//1printf("%s:%03d <-- (",b,msec.rem*100);			
+	printf("%02x:%02x:%02x ", p->CEB[2]>>8,p->CEB[3]>>8,p->CEB[3]&0x00ff);
+
 	for(i1=0;i1<test_K2[Ncom][1]+1;i1++) printf("%x.",test_K2[Ncom][i1]);
 	N_COM++;Ncount++;
 	Tcount_com=Tcount;
@@ -172,24 +178,56 @@ write_com24 (Ncom)
 	int i1;
 	short V=0;
 	int i;
-	V=(short)p->from41.Vr;
+	V=(short)(p->from41.Vr);
 	if (TS) V=0;
 	test_K2[24][4]=V&0x00ff;
 	test_K2[24][5]=V>>8;
-	printf("!! V=%d",V);
-	V=(short)(p->from41.Ar/1.5625);
+	printf(" V=%d",V);
+	//V=(short)(p->from41.Ar/1.5625);
+	V=(short)(p->from41.Ar);
 	if (TS) V=0;
 	test_K2[24][6]=V&0x00ff;
-	test_K2[24][7]=V>>8;
-	printf("!! A=%d\n",V);
+	test_K2[24][7]=V>>8; 
+	printf(" dV=%d\n",V);
 	test_K2[24][8]=0; //check sum
 	for (i1=0;i1<8;i1++) test_K2[24][8]+=test_K2[24][i1]; //test sum
 	wr_cpcs_s.type=5;	wr_cpcs_s.cnl=chan2;	wr_cpcs_s.cnt=9;
+
+	//test_K2[24][7]=0; //check sum
+	//for (i1=0;i1<7;i1++) test_K2[24][7]+=test_K2[24][i1]; //test sum
+	//wr_cpcs_s.type=5;	wr_cpcs_s.cnl=chan2;	wr_cpcs_s.cnt=8;
+
 	for(i=0;i<test_K2[24][1]+1;i++) wr_cpcs_s.uom.dt[i]=test_K2[24][i];
 	Send(pid_drv,&wr_cpcs_s,&wr_cpcs_r,sizeof(wr_cpcs_s),sizeof(wr_cpcs_r));
-//	for(i1=0;i1<9;i1++) printf(" %x.",wr_cpcs_s.uom.dt[i1]);printf("\n");
+	printf("%02x:%02x:%02x ", p->CEB[2]>>8,p->CEB[3]>>8,p->CEB[3]&0x00ff);
+	for(i1=0;i1<8;i1++) printf("%x.",wr_cpcs_s.uom.dt[i1]);printf("\n");
+
+
 //	printf("!! V=%d\n",V);
 }
+
+
+write_com27 (Ncom)
+{
+	int i1;
+	short D=0;
+	int i;
+	D=(short)(p->from41.D/1000);
+	if (TS) D=0;
+	test_K2[27][8]=D&0x00ff;
+	test_K2[27][9]=D>>8;
+	test_K2[27][11]=0; //check sum
+	for (i1=0;i1<11;i1++) test_K2[27][11]+=test_K2[27][i1]; //test sum
+	wr_cpcs_s.type=5;	wr_cpcs_s.cnl=chan2;	wr_cpcs_s.cnt=12;
+
+	for(i=0;i<test_K2[27][1]+1;i++) wr_cpcs_s.uom.dt[i]=test_K2[27][i];
+	Send(pid_drv,&wr_cpcs_s,&wr_cpcs_r,sizeof(wr_cpcs_s),sizeof(wr_cpcs_r));
+	printf("%02x:%02x:%02x ", p->CEB[2]>>8,p->CEB[3]>>8,p->CEB[3]&0x00ff);
+	for(i1=0;i1<12;i1++) printf("%x.",wr_cpcs_s.uom.dt[i1]);printf("\n");
+	printf("\n D=%d \n",D);
+
+}
+
 
 read_kvit()
 {
@@ -233,6 +271,7 @@ main(int argc, char *argv[]) {
 	delay(500);
 	open_shmem();
 
+	p->to41.PrM_K2=0;
 	if (TS) printf("		УСТАНОВЛЕН РЕЖИМ РАБОТЫ ПО СИГНАЛУ ТВК\n");
 	if (TM) printf("		УСТАНОВЛЕН РЕЖИМ РАБОТЫ БЕЗ ОЖИДАНИЯ КОМАНДЫ НАЧАЛА СС\n");
 	if (COR_T!=0) printf("		УСТАНОВЛЕНА КОРРЕКЦИЯ ПО ВРЕМЕНИ %d МИНУТ\n",COR_T);
@@ -308,10 +347,11 @@ main(int argc, char *argv[]) {
 				if (K2count>N+i) //достаточное кол-во байт в буфере
 				{
 					//printf("N=%d \n",N);					
-					time_of_day=time(NULL);
-					strftime(b, 40 , "%T", localtime(&time_of_day));//D T
-					msec=div(Tcount,10);
-					printf("%s:%03d -->",b,msec.rem*100);			
+					//1_of_day=time(NULL);
+					//1strftime(b, 40 , "%T", localtime(&time_of_day));//D T
+					//1msec=div(Tcount,10);
+					//1printf("%s:%03d -->",b,msec.rem*100);			
+					printf("%02x:%02x:%02x ", p->CEB[2]>>8,p->CEB[3]>>8,p->CEB[3]&0x00ff);
 					for(i1=0;i1<N;i1++) chkSUM+=buffer[i+i1]; //подсчет контр суммы         
 					//printf("i=%d chkSUM=%x\n",i,chkSUM);
 					if (chkSUM!=buffer[N+i]) //если не совпадает контр сумма
@@ -489,10 +529,12 @@ main(int argc, char *argv[]) {
  			   case 21: write_com(9);printf(")  Команда КАН-Л отправлена\n");break;
 			   case 22: read_kvit();break;
 
-			   case 23: if (TS) //!!!!!!!!!!!!!!!!!!!!!!!!
+			   case 23: //if (TS) //!!!!!!!!!!!!!!!!!!!!!!!!
 						{	
 							printf("\n---- ВКЛЮЧЕН ТВК С МАХ ОСЛАБЛЕНИЕМ -----\n");
-							p->toPR1[3]=0xFC00;
+							//p->toPR1[3]=0xFC00;//0xFC00;
+							//p->toPR1[3]=0x0000;//0xFC00;
+							p->toPR1[3]=0xBC00;//0xFC00;
 						}
 						N_COM++;break;
 			   case 24:	N_COM++;break;
@@ -516,8 +558,10 @@ main(int argc, char *argv[]) {
 			   case 35: read_kvit();break;
  			   case 36: write_com24(24);printf("  Начата посылка команды ДанИ.V.dV\n");
 						comOK[24]=1;N_COM++;
+						//if (TS) p->toPR1[3]=0xFC00;//8000-onn 0 dBm 0000-off TVK 
 						if (TS) p->toPR1[3]=0x8000;//8000-onn 0 dBm 0000-off TVK 
-						Tstart=p->from41.T_SS-8; //время старта за 10 сек до сеанса
+						else p->toPR1[3]=0x0000;//8000-onn 0 dBm 0000-off TVK 
+						Tstart=p->from41.T_SS-10; //время старта за 10 сек до сеанса
 						//Tpr=p->Dout41[30]*3600+p->Dout41[31]*60+p->Dout41[32]; //время прибора из СЕВ
 						Tpr=p->Dout41[30]*3600+p->Dout41[31]*60+p->Dout41[32]+COR_T; //время прибора из СЕВ
 						if (Tstart<Tpr) //если "проспали" сеанс -> переводим на след цикл
@@ -538,25 +582,26 @@ main(int argc, char *argv[]) {
 						}				
 						break;
 			//-----------------------------------
- 			   case 38: write_com(27);printf(")  Команда ДанП.Т.Р отправлена\n");break;
+ 			   case 38: write_com27(27);printf(")  Команда ДанП.Т.Р отправлена\n");
+						N_COM++;				
+						break;
 			   case 39: read_kvit();break;
 			//-----------------------------------
  			   case 40: write_com(31);printf(")  			Команда Сеанс.L отправлена\n\n");
 						break;
-			   //case 41: read_kvit_NUS();break;
 			   case 41: read_kvit();break;
  			   case 42: if (TS) {if (Tcount>Tcount_com+40) {write_com(32);printf("\n\nОБР ТЕСТ\n\n");}}
 						else N_COM++;
 						break;			   
  			   case 43: if (TS)	
 						{
-							if (Tcount>Tcount_com+200) {write_com(23);write_com(33);N_COM=37;}
+							if (Tcount>Tcount_com+100) {write_com(23);write_com(33);N_COM=37;}
 							else if (comOK[24]>0) {comOK[24]++;if (comOK[24]>10) {comOK[24]=1;write_com24(24);}} 
 						}
 						else 
 						{
 							if (Tcount>Tcount_com+240) {write_com(23);write_com(33);N_COM=37;}
-							else if (Tcount>Tcount_com+40) {comOK[24]++;if (comOK[24]>10) {comOK[24]=1;write_com24(24);}} 
+							else if (Tcount>Tcount_com+10) {comOK[24]++;if (comOK[24]>10) {comOK[24]=1;write_com24(24);}} 
 						}
 						break;
 			   case 44: read_kvit();break;
