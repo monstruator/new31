@@ -108,13 +108,14 @@ while(1)
 	buf[3]=p->Dout41[8];		
  	if (p->from41.num_com==0) p->Kg41=p->from41.D;  //курс из прибора 4.1 при 0 команде
 	p->to41.simfonia41.status1=p->Dout41[24]; // 0, если нет обмена
-    memcpy(&byta2,&p->Dout41[13],2); p->to41.simfonia41.status2=byta2;	//1, если ендостоверно
+    memcpy(&byta2,&p->Dout41[13],2); p->to41.simfonia41.status2=byta2;	//1, если недостоверно
 	
-	//if ((p->to41.simfonia41.status1==0)||(p->to41.simfonia41.status2>0)) p->to41.simfonia41.Kg=p->Kg41;
-	//else 
+//	if ((p->to41.simfonia41.status1==0)||(p->to41.simfonia41.status2 & 0x3000)) p->to41.simfonia41.Kg=p->Kg41;
+//	else 
     {memcpy(&byta2,&p->Dout41[0],2);	 Flt=byta2*pi/(1<<14); p->to41.simfonia41.Kg=Flt;}
 	
-	p->to41.simfonia41.Kg=1.579; //временно
+//	p->to41.simfonia41.Kg=1.5725; //временно 90.1
+//	p->to41.simfonia41.Kg=1.5621; //временно 89.5
     
 	memcpy(&byta2,&p->Dout41[4],2);	 Flt=byta2*Mc;p->to41.simfonia41.V=Flt;	
     memcpy(&byta4,&buf[0],4);	 Flt=byta4*pi/(1<<31);p->to41.simfonia41.fi=-Flt;// printf("Fi=%f \n",Flt*180/pi);

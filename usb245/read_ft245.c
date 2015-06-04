@@ -149,7 +149,7 @@ int reset_device( int fd )
 //--------------------------------------------------------------------------
 int read_data_nonblock1( int fd, unsigned long psize, unsigned long npackets, char *fname )
 {
-	FILE 		 	*out_fp = NULL;
+//	FILE 		 	*out_fp = NULL;
 	char		 	*data_buff;
 	unsigned long	in_buf = 0;
 	int				i = 1,i1=0;
@@ -165,9 +165,9 @@ int read_data_nonblock1( int fd, unsigned long psize, unsigned long npackets, ch
 		return ( -1 );
 	}
 
-	if (TM)
-		if ( ( out_fp = fopen( "//1/home/seversk/new31/src/usb_log", "w" ) ) == NULL ) 
-			fprintf( stderr, "Couldn't create/open file %s. %s\n", fname, strerror( errno ) );
+//	if (TM)
+//		if ( ( out_fp = fopen( "//1/home/seversk/new31/src/usb_log", "w" ) ) == NULL ) 
+//			fprintf( stderr, "Couldn't create/open file %s. %s\n", fname, strerror( errno ) );
 	
 
 	while (i) 
@@ -186,7 +186,7 @@ int read_data_nonblock1( int fd, unsigned long psize, unsigned long npackets, ch
 					priem=0;	//был прием
 					for(i1=0;i1<ret;i1++) DCP_K2[i1+sum_ret]=data_buff[i1];
 					sum_ret+=ret;
-					if (TM) printf("sum_ret=%d\n",sum_ret);					
+					printf("\n sum_ret=%d\n\n",sum_ret);					
 				}
 			}
 		
@@ -196,9 +196,9 @@ int read_data_nonblock1( int fd, unsigned long psize, unsigned long npackets, ch
 
 		if ( ((priem>40)&&(sum_ret>0)) || (sum_ret==12500)) //{printf("reset\n");priem=0;reset_device(fd);}
 		{
-			if ((TM)&&(out_fp != NULL)) //если тестовый режим пишем в файл
-				if ( fwrite( DCP_K2, sum_ret, 1, out_fp ) != 1 )
-					fprintf( stderr, "Failed to write to file. %s\n", strerror( errno ) );
+			//if ((TM)&&(out_fp != NULL)) //если тестовый режим пишем в файл
+			//	if ( fwrite( DCP_K2, sum_ret, 1, out_fp ) != 1 )
+			//		fprintf( stderr, "Failed to write to file. %s\n", strerror( errno ) );
 			//if ((p->from41.num_com==2)&&(p->from41.num_KS==2))//если это сеанс К2
 			{
 				if (sum_ret>SUM_DCP_K2*2) sum_ret=SUM_DCP_K2*2; //обрежем лишнее
@@ -219,7 +219,7 @@ int read_data_nonblock1( int fd, unsigned long psize, unsigned long npackets, ch
 
 	printf( "\n" );
 	free( data_buff );
-	fclose( out_fp );
+	//fclose( out_fp );
 	
 	return ( 0 );
 }

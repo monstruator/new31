@@ -115,8 +115,8 @@ void read_shot()
 //	for(i=0;i<6;i++) printf("%x ",log_shot.CEB[i]);
 	printf("%02x:%02x:%02x ", log_shot.CEB[2]>>8,log_shot.CEB[3]>>8,log_shot.CEB[3]&0x00ff);
 	// UPOS-----------------------------------------------
-/*	printf(" s=%d ",log_shot.UR_sign_K1);
-	if (log_shot.RAZN_0>=0) printf(" r0=+");
+	printf(" s=%d ",log_shot.UR_sign_K1);
+/*	if (log_shot.RAZN_0>=0) printf(" r0=+");
 	else 				   printf(" r0=");
 	printf("%1.3f ",log_shot.RAZN_0);
 	if (log_shot.RAZN_1>=0) printf(" r1=+");

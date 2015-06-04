@@ -99,8 +99,8 @@ void main( void )
 //-------------------------------------------------------------------------------------
 //		printf("to41=%2.2f fr41=%2.2f fact=%2.2f Pr1=%d ",p->to41.P_FACT,p->from41.P_ANT,p->to41.P_FACT-p->to41.simfonia41.Kg,p->Dout41[16]); //16
 //		printf("fr41=%2.2f fact=%2.2f Pr1=%d ",p->from41.P_ANT,p->to41.P_FACT-p->to41.simfonia41.Kg,p->Dout41[18]); //16
-		printf(" LVL4=%d LVL20=%1.1e DPL=%2.2d",p->to41.UR_sign_K1,p->U.SUM_20,p->U.DPL_1*244);
-		printf(" D=%f Vr=%f ",p->from41.D,p->from41.Vr);
+		printf(" Si=%d Inf=%1.1e DPL=%2.2d %1.4f",p->to41.UR_sign_K1,p->U.SUM_20,p->U.DPL_1*244,p->to41.simfonia41.Kg);
+//		printf(" D=%f Vr=%f ",p->from41.D,p->from41.Vr);
 //			printf("H=%d M=%d S=%d T41=%d T31=%d\n",p->Dout41[30],p->Dout41[31],p->Dout41[32],p->from41.T_SS,p->Dout41[30]*3600+p->Dout41[31]*60+p->Dout41[32]);
 //			printf("  D=%d \n",p->from41.T_SS-10-(p->Dout41[30]*3600+p->Dout41[31]*60+p->Dout41[32]));
 			
