@@ -12,7 +12,7 @@ void write_shot();
 
 void main( void )
   {
-	FILE *out_fp_data = NULL;
+ 	FILE *out_fp_data = NULL;
 	FILE *out_fp_log = NULL;
     timer_t id;
 	pid_t proxy;
@@ -21,7 +21,7 @@ void main( void )
     struct itimerspec timer;
     struct sigevent event;
 	short cr_SEANCE=0;	
-	char log_f[30] = "//1/log/logs_000000_0000";
+ 	char log_f[30] = "//1/log/logs_000000_0000";
 	char data_f[30] ="//1/log/data_000000_0000";
 
 	open_shmem();
@@ -92,14 +92,17 @@ void main( void )
 
 
 //			printf("ZI_DATA=%x ZI_DOST=%x\n",p->U.ZI_DATA,p->U.ZI_DOST);
+//			printf(" ZI_D=%x",p->U.ZI_DOST);
 //			printf("\n");
 		}
-		if (p->from41.num_com==2) printf("%3d  ",i2++); else printf("  0  ");
+	//	if (p->from41.num_com==2) printf("%3d  ",i2++); else printf("  0  ");
+		printf("%02x:%02x:%02x ", p->CEB[2]>>8,p->CEB[3]>>8,p->CEB[3]&0x00ff);
+
 		//	printf("V=%f A=%f D=%f T=%d \n",p->from41.Vr,p->from41.Ar,p->from41.D,p->from41.T_SS);
 //-------------------------------------------------------------------------------------
 //		printf("to41=%2.2f fr41=%2.2f fact=%2.2f Pr1=%d ",p->to41.P_FACT,p->from41.P_ANT,p->to41.P_FACT-p->to41.simfonia41.Kg,p->Dout41[16]); //16
 //		printf("fr41=%2.2f fact=%2.2f Pr1=%d ",p->from41.P_ANT,p->to41.P_FACT-p->to41.simfonia41.Kg,p->Dout41[18]); //16
-		printf(" Si=%d Inf=%1.1e DPL=%2.2d %1.4f",p->to41.UR_sign_K1,p->U.SUM_20,p->U.DPL_1*244,p->to41.simfonia41.Kg);
+		printf(" Si=%d Inf=%1.1e DPL=%2.2d ",p->to41.UR_sign_K1,p->U.SUM_20,p->U.DPL_1*244);
 //		printf(" D=%f Vr=%f ",p->from41.D,p->from41.Vr);
 //			printf("H=%d M=%d S=%d T41=%d T31=%d\n",p->Dout41[30],p->Dout41[31],p->Dout41[32],p->from41.T_SS,p->Dout41[30]*3600+p->Dout41[31]*60+p->Dout41[32]);
 //			printf("  D=%d \n",p->from41.T_SS-10-(p->Dout41[30]*3600+p->Dout41[31]*60+p->Dout41[32]));
@@ -128,9 +131,10 @@ void main( void )
 	}
 
 // 	printf(" sDCP=%d ",p->to41.sum_DCP);		//количество принятых слов с массиве дцп
+//    printf(" ZI_D=%x",p->U.ZI_DOST);
 
 	printf("\n");
-	if (p->from41.num_com==2)
+	if ((p->from41.num_com==3)||(p->from41.num_com==2))
 	{
 		write_shot();
 		if ( out_fp_log != NULL ) 

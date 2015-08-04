@@ -106,12 +106,12 @@ while(1)
 	buf[1]=p->Dout41[6];
  	buf[2]=p->Dout41[9];
 	buf[3]=p->Dout41[8];		
- 	if (p->from41.num_com==0) p->Kg41=p->from41.D;  //курс из прибора 4.1 при 0 команде
+ 	if ((p->from41.num_com==1)&&(p->from41.D>0)&&(p->from41.D<3.15)) p->Kg41=p->from41.D;  //курс из прибора 4.1 при 0 команде
 	p->to41.simfonia41.status1=p->Dout41[24]; // 0, если нет обмена
     memcpy(&byta2,&p->Dout41[13],2); p->to41.simfonia41.status2=byta2;	//1, если недостоверно
 	
-//	if ((p->to41.simfonia41.status1==0)||(p->to41.simfonia41.status2 & 0x3000)) p->to41.simfonia41.Kg=p->Kg41;
-//	else 
+	if ((p->to41.simfonia41.status1==0)||(p->to41.simfonia41.status2 & 0x3000)) p->to41.simfonia41.Kg=p->Kg41;
+	else 
     {memcpy(&byta2,&p->Dout41[0],2);	 Flt=byta2*pi/(1<<14); p->to41.simfonia41.Kg=Flt;}
 	
 //	p->to41.simfonia41.Kg=1.5725; //временно 90.1
@@ -126,10 +126,10 @@ while(1)
     memcpy(&byta2,&p->Dout41[12],2); p->to41.simfonia41.tau=byta2*pi/(1<<15);	
 
 //	printf("%02x%02x	",p->Dout41[6],p->Dout41[7]);
-//  printf("Kg=%4.3f V=%4.3f fi=%4.3f ",p->to41.simfonia41.Kg, p->to41.simfonia41.V,p->to41.simfonia41.fi);
+//    printf("Kg=%4.3f D=%4.3f ",p->to41.simfonia41.Kg, p->from41.D);
 //	printf("la=%4.3f a=%4.3f b=%4.3f ",p->to41.simfonia41.la,p->to41.simfonia41.a,p->to41.simfonia41.b);
 //	printf("tau=%4.3f st=%d \n",p->to41.simfonia41.tau,p->to41.simfonia41.status2);
-// 	printf("st1=%x st2=%x\n",p->to41.simfonia41.status1,p->to41.simfonia41.status2);
+ //	printf("st1=%x st2=%x ",p->to41.simfonia41.status1,p->to41.simfonia41.status2);
 //	 printf("Kypc=%8.4f \n",p->to41.simfonia41.Kg);
 
 	//if (p->U.SUM_20==0) p->to41.Fd_FACT=0;
@@ -146,7 +146,7 @@ while(1)
 //	printf("					 P_ANT = %4.3f", p->from41.P_ANT*57.3);
 //	printf(" P_FACT = %4.3f  com42=%d \n",p->to41.P_FACT*57.3,p->from42.num_com);
 
-	//printf("n_com1=%d cr_com=%d\n",p->from41.num_com,p->from41.cr_com);
+//	printf("n_com1=%d cr_com=%d\n",p->from41.num_com,p->from41.cr_com);
 	//printf("Angl 2=%02f r=%f NK%d  \n",from41.P_ANT,p->to41.P_FACT,from41.num_com);
 
 	//Готовность к сеансу связи

@@ -74,6 +74,7 @@ void main( int argc, char *argv[] )
 	} //если есть команда от 4.1
 	else Init_K1(1); //если есть команда от 4.2 в К2
 
+	/*
 	Dopler1=60000;
 	writeDopler(-Dopler1);
 	
@@ -84,7 +85,7 @@ void main( int argc, char *argv[] )
 	while(f <= 8) {
 		Write_K1(SUM4);
 		Write_K1(RAZN0);
-		delay(200);
+		delay(400);
 		pid=Receive( 0 , 0, 0 );				
 		if (pid==proxy_DRV1) DDRead_K1();
 		pid=Receive( 0 , 0, 0 );				
@@ -94,8 +95,12 @@ void main( int argc, char *argv[] )
 	}
 	SREDN = floatSUM_4/f;
 	printf("измерен уровень шума %3.3e \n",SREDN);			
-	//writePorogs(0, SREDN*2);
-	writePorogs(1e2, SREDN*2);
+	*/
+	//writePorogs(SREDN*2, SREDN*2);
+	//writePorogs(1e2, SREDN*2);
+	writePorogs(1e2, 2e9);
+	//writePorogs(SREDN*10, SREDN*2);
+	//writePorogs( SREDN*10, 1e2);
 
 	Dopler1=(float)p->from41.Fd*1000;
 	//printf("d_from41=%e\n",p->from41.Fd);
@@ -148,8 +153,8 @@ void main( int argc, char *argv[] )
 				case 2 : Write_K1(SUM20); break;
 				case 3 : Write_K1(YP); break;
 				case 4 : Write_K1(DPL1); break;						
-				case 5 : Write_K1(RAZN0); break;						
-				case 6 : Write_K1(RAZN1); break;						
+				//case 5 : Write_K1(RAZN0); break;						
+				//case 6 : Write_K1(RAZN1); break;						
 				case 9 : //раз в пол сек выполняем сервисные операции
 						test_dpl=(p->from41.Fd-2)*1000; //корректировка ошибки определения Доплера в ЧУПОС
 						if (p->U.SUM_4>1e+8) p->to41.UR_sign_K1=(short)((log10(p->U.SUM_4)-8)*16);	else p->to41.UR_sign_K1=0;

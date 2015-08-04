@@ -23,6 +23,7 @@ void main( void )
 	short cr_SEANCE=0;	
 	char log_f[30] = "//1/log/logs_000000_0000";
 	char data_f[30] ="//1/log/logs";
+	int old_DCP;
 
     /* Get a proxy for the timer to kick */
     proxy = qnx_proxy_attach( 0, 0, 0, -1 );
@@ -92,7 +93,7 @@ void main( void )
 //			printf("H=%d M=%d S=%d T41=%d T31=%d\n",p->Dout41[30],p->Dout41[31],p->Dout41[32],p->from41.T_SS,p->Dout41[30]*3600+p->Dout41[31]*60+p->Dout41[32]);
 //			printf("  D=%d \n",p->from41.T_SS-10-(p->Dout41[30]*3600+p->Dout41[31]*60+p->Dout41[32]));
 			
-//		printf("cr_seance=%d\n",p->to41.cr_SEANCE);
+		printf("cr_seance=%d ",p->to41.cr_SEANCE);
 //    	printf(" size=%d\n",sizeof(obmen_31_41_t)); ///!!!!!!
 
 		if ( out_fp != NULL ) 
@@ -116,6 +117,9 @@ void read_shot()
 	printf("%02x:%02x:%02x ", log_shot.CEB[2]>>8,log_shot.CEB[3]>>8,log_shot.CEB[3]&0x00ff);
 	// UPOS-----------------------------------------------
 	printf(" s=%d ",log_shot.UR_sign_K1);
+	//printf(" s1=%1.2e ",log_shot.SUM_20);
+	//printf(" s2=%1.2e ",log_shot.SUM_4);
+
 /*	if (log_shot.RAZN_0>=0) printf(" r0=+");
 	else 				   printf(" r0=");
 	printf("%1.3f ",log_shot.RAZN_0);
@@ -131,8 +135,8 @@ void read_shot()
 
 //	printf(" d_p=%3.1f ",(log_shot.P_FACT-log_shot.P_ANT)*RAD);			//азимут, рад
 //	printf(" d_b=%3.1f ",(log_shot.beta_FACT-log_shot.beta)*RAD);		//угол места, рад
-//	printf(" cr=%d ",log_shot.cr_SEANCE);		//порядковый номер массива данных цикла передачи 
-//	printf(" sDCP=%d ",log_shot.sum_DCP);		//количество принятых слов с массиве дцп
+	printf(" cr=%d ",log_shot.cr_SEANCE);		//порядковый номер массива данных цикла передачи 
+	printf(" sDCP=%d ",log_shot.sum_DCP);		//количество принятых слов с массиве дцп
 	printf(" c_OI=%d ",log_shot.c_OI);		//количество принятых слов с массиве дцп
 //	printf(" dpl=%d ",log_shot.DPL_1*244+(short)log_shot.Fd*1000);
 //	printf(" dpl3=%d ",log_shot.DPL_1*244);

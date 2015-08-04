@@ -96,6 +96,7 @@ int		 MODB[2]={0,0};
 //----- onucaHue daHHblx npu pa6ome c np.4-1,4-2 -----//
 #define V 1400
 unsigned short DCEB[6];//Dout42[V];
+float beta_corr; // коррекция ошибки привода УМ
 
  C1=2048./pi;C2=4096.0/360.0;C3=180./pi;C4=C1*Kncu;
  C5=C2*Kncu;C6=C1*Kq;C7=C3;C8=C2*Kq;
@@ -315,8 +316,14 @@ for(;;)//----- CEPBEP -----//
 
 				//if (KK>4.71225)  p->from41.P_ANT=4.71225;	if (KK<-4.71225) p->from41.P_ANT=-4.71225;
 
-				if (p->from41.beta>=0)	p->toPR1[2]=-p->from41.beta*C1;//Угол места
-		    	else p->toPR1[2]=(360+(-p->from41.beta*C3))*C2;//
+				if (p->from41.beta<0.61)	//коррекция ошибки привода УМ
+				{	if (p->from41.Fd<-7) beta_corr=p->from41.beta-0.0174;
+       				else if (p->from41.Fd>7) beta_corr=p->from41.beta-0.0052;
+				}
+                else beta_corr=p->from41.beta;
+				
+				if (beta_corr>=0)	p->toPR1[2]=-beta_corr*C1;//Угол места
+		    	else p->toPR1[2]=(360+(-beta_corr*C3))*C2;//
 
 				p->toPR1[0]=KK*RADtoGRAD/2+1991;//Азимут		
 
@@ -414,10 +421,12 @@ for(;;)//----- CEPBEP -----//
 			//printf("jmp=%d \n",p->jump);
 		} //конец 3-х Герц
 		//-------------------------- 10 Hz -------------------------
-		//for (i=0;i<8;i++) printf("  %x",p->toPR1[i]);printf("\n");
+		for(i=0;i<3;i++) p->toPR1[i]=p->toPR1[i]&0x0fff;
+
+		//for (i=0;i<3;i++) printf("  %04x",p->toPR1[i]);printf("\n");
 		//printf("pr1=%x pr1=%02f a1=%02f a=%02f a2=%02f NK%d\n", p->toPR1[0],KK,p->from41.P_ANT_1,p->from41.P_ANT,p->from41.P_ANT_2,p->from41.num_com);
 		
-		for(i=0;i<3;i++) p->toPR1[i]=p->toPR1[i]&0x0fff;
+		//for(i=0;i<3;i++) p->toPR1[i]=p->toPR1[i]&0x0fff;
 		//printf("%02x:%02x:%02x ", p->CEB[2]>>8,p->CEB[3]>>8,p->CEB[3]&0x00ff);
 		//printf("  to=%d\tfrom=%d\t%d",p->toPR1[2],p->PR1[2],p->toPR1[2]-p->PR1[2]);printf("\n");
 		//if (p->toPR1[2]-p->PR1[2]>6) p->toPR1[2]+=6;
