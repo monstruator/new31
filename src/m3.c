@@ -166,7 +166,7 @@ for(;;)//----- CEPBEP -----//
 		if(KK_end(dev,Ynp_np1,2)==-1){owu6ka|=2;break;}
 		for(i=0;i<8;i++) p->PR1[i]=dev->tx_B[10+i];
 //Исправность второго гетеродина
-		p->PR1[3]=p->PR1[3]|0x4000;
+//		p->PR1[3]=p->PR1[3]|0x4000;
 //		for(i=0;i<8;i++) printf("  %04x",dev->tx_B[10+i]);printf("\n");
 //		for(i=0;i<8;i++) printf("  %04x",p->PR1[i]);printf("\n");
 

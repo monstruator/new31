@@ -19,7 +19,7 @@ void main( int argc, char *argv[] )
 	int TC10=0; //таймер по 100 мс
 	int N;//кол-во чтений УПОС
 	int N1;//кол-во чтений УПОС на прошлом такте	
-	int Mes,reset_u=0;
+	int Mes;
     pid_t proxy,pid;
     timer_t id;
 	unsigned int i,i2=0;
@@ -27,8 +27,7 @@ void main( int argc, char *argv[] )
     struct sigevent event;
 	short i_p=0;
 	float Dopler1,m_porog[2],test_dpl;
-	time_t start_time,end_time;
-
+	
 	while( (i=getopt(argc, argv, "mis:") )!=-1)	{
 		switch(i){
 			case 'p' :  break;
@@ -67,7 +66,7 @@ void main( int argc, char *argv[] )
 	cr_com=p->from41.cr_com; //запомнили номер команды
 
 	
-//	start_time=clock();
+
 	if ((p->from41.num_com==1)||(p->from41.num_com==2)||(p->from41.num_com==3)) 	
 	{
 		Init_K1(p->from41.num_KS-1);
@@ -84,7 +83,7 @@ void main( int argc, char *argv[] )
 	printf("Расчет среднего значения уровня суммарного канала ... \n");
 	while(f <= 8) {
 		Write_K1(SUM4);
-		Write_K1(RAZN0);
+		//Write_K1(RAZN0);
 		delay(400);
 		pid=Receive( 0 , 0, 0 );				
 		if (pid==proxy_DRV1) DDRead_K1();
@@ -139,9 +138,6 @@ void main( int argc, char *argv[] )
 					p->to41.sum_DCP=data_count;		//передаем кол-во данных
 					p->to41.cr_SEANCE++; //увеличили порядковый номер массива
 					printf("Сформирован массив К1 N%d. Кол-во данных %d слов\n",p->to41.cr_SEANCE,p->to41.sum_DCP);
-					//reset_upos();
-					//nastr_upos(p->from41.num_KS-1);
-
 				}
 				data_count=p->U.c_OI=0;  //обнуление буфера УПОС
 			}
@@ -158,11 +154,11 @@ void main( int argc, char *argv[] )
 				case 9 : //раз в пол сек выполняем сервисные операции
 						test_dpl=(p->from41.Fd-2)*1000; //корректировка ошибки определения Доплера в ЧУПОС
 						if (p->U.SUM_4>1e+8) p->to41.UR_sign_K1=(short)((log10(p->U.SUM_4)-8)*16);	else p->to41.UR_sign_K1=0;
-						//if (abs(p->from41.Fd*1000-Dopler1) > 2000) 
+						
 						//	if ((abs(p->from41.Fd<4.5))&&(abs(p->from41.Fd)>5.5))
 						if (abs(test_dpl-Dopler1) > 2000) 
 							//if ((abs(test_dpl*1000<4500))||(abs(test_dpl*1000)>5500)) //защита от повисания ЧУПОСа
-							if ((test_dpl<-5500)||(test_dpl>5500)||((test_dpl>-4500)&&(test_dpl<4500))) //защита от повисания ЧУПОСа
+							//if ((test_dpl<-5500)||(test_dpl>5500)||((test_dpl>-4500)&&(test_dpl<4500))) //защита от повисания ЧУПОСа
 							{
 								//Dopler1=(float)p->from41.Fd*1000;
 								Dopler1=test_dpl;
@@ -175,20 +171,6 @@ void main( int argc, char *argv[] )
 					
 						//printf("OI=%x c_OI=%x\n",p->U.OI,p->U.c_OI);				
 						//printf("ZI_DATA=%x	 ZI_DOST=%x\n",p->U.ZI_DATA,p->U.ZI_DOST);
-
-						//if((m_porog[0]==p->U.SUM_4)&&(reset_u==0)) i2++;else i2=0;
-						//m_porog[0]=p->U.SUM_4;
-						/*if (i2>6) 
-						{
-							i2=0;
-							reset_u=1;
-							//reset_upos();
-							//Init_K1(p->from41.num_KS-1);
-							reset_u=0;
-							p->U.SUM_4=1e8;
-						} */
-						//if(m_porog[0]==p->U.SUM_4) {p->U.SUM_20=0;} 
-						//m_porog[0]=p->U.SUM_4;
 						break;
 			}
 
