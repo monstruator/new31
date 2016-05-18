@@ -149,6 +149,8 @@ while(1)
 //	printf("n_com1=%d cr_com=%d\n",p->from41.num_com,p->from41.cr_com);
 	//printf("Angl 2=%02f r=%f NK%d  \n",from41.P_ANT,p->to41.P_FACT,from41.num_com);
 
+	p->to41.pr_rejim_AS=p->from41.pr_rejim_AS; 
+	
 	//Готовность к сеансу связи
 	if (p->from41.num_com==1) i1++; //считаем время от первой ком нач сеанса
 	if ((gloria_start==0)&&((p->from41.num_com==1)||(p->from41.num_com==2)))

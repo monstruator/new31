@@ -78,7 +78,7 @@ unsigned short q=1,ncu=2,mema=3;
 int StateK1=1,StateK2=0;//0 - stop, 1-start
 int TestK2=0;//доп настройки К2
 float 	C1,C2,C3,C4,C5,C6,C7,C8;
-short oldPR1_2=0,oldPR4=0;
+//short oldPR1_2=0,oldPR4=0;
 int TIMESEV,setANT=0,minus_x;
 	double PSI=0,TETA=0,oldPSI,oldTETA;
 	double x,y,x1,y1,C,S,ri,r1,r2,r3,
@@ -313,7 +313,6 @@ for(;;)//----- CEPBEP -----//
 
 //				if ((p->jump==1)&&(KK<-pi/2))    KK=KK+2*pi;
 //					else if ((p->jump==-1)&&(KK>pi/2))    KK=KK-2*pi;				
-
 				//if (KK>4.71225)  p->from41.P_ANT=4.71225;	if (KK<-4.71225) p->from41.P_ANT=-4.71225;
 
 				if (p->from41.beta<0.61)	//коррекция ошибки привода УМ
